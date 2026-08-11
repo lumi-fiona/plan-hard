@@ -46,6 +46,10 @@ Six disciplines, applied before a plan is presented:
 5. **Design lazy, degrade gracefully.** Reuse before building; keep fallbacks; anything that expires gets a real lifetime number and a reconnect path; always offer the cheaper version of the plan.
 6. **Red-team the draft before presenting it.** Seven sweeps, including a contradiction sweep, a two-week test, and an honesty pass. A plan with zero listed risks means nobody looked.
 
+## Checking that it does anything
+
+`evals/` holds three cases, each a prompt with a trap in it and a rubric that scores whether the answer went and looked. They are written for `claude plugin eval`, which can run the same case with and without the plugin and report the difference — see [evals/README.md](evals/README.md), including the honest note that the suite has never been executed against the runner.
+
 ## Where it came from
 
 Three AI plans for the same feature were fact-checked against primary sources and the actual repository. The most sophisticated plan built its centerpiece on an API that had been dead for over a year, and cited a flag as "confirmed working" that actually crashes. The winner verified external reality, reused what existed, kept its fallbacks, and was honest about what it didn't know.
