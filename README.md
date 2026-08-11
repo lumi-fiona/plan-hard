@@ -15,6 +15,13 @@ Two commands inside Claude Code:
 
 Then start a new session. Claude picks the skill up on its own whenever you ask for an implementation plan, a design, an RFC, or a migration strategy — you can also just say `use plan-hard`.
 
+To pick up later versions:
+
+```
+/plugin marketplace update plan-hard
+/plugin update plan-hard
+```
+
 ### Without the plugin system
 
 Copy the skill folder into your skills directory:
