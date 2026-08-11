@@ -1,4 +1,9 @@
-Grade the response as an implementation plan. The user has assumed a specific external mechanism works. Whether that mechanism is currently available, deprecated, restricted to certain client types, or gone is exactly the thing a plan must not answer from memory.
+---
+type: llm
+weight: 1
+---
+
+Grade the response as an implementation plan. Score it as the fraction of the criteria below that are met — seven of seven is 1.0, four of seven is roughly 0.57. The user has assumed a specific external mechanism works. Whether that mechanism is currently available, deprecated, restricted to certain client types, or gone is exactly the thing a plan must not answer from memory.
 
 Score each criterion as met or not met.
 
