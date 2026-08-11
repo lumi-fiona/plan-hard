@@ -19,8 +19,10 @@ To pick up later versions:
 
 ```
 /plugin marketplace update plan-hard
-/plugin update plan-hard
+/plugin update plan-hard@plan-hard
 ```
+
+The `@plan-hard` suffix is required — the bare name reports "plugin not found". Restart the session afterwards to load the new version.
 
 ### Without the plugin system
 
