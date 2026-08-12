@@ -48,7 +48,11 @@ Six disciplines, applied before a plan is presented:
 
 ## Checking that it does anything
 
-`evals/` holds three cases, each a prompt with a trap in it and a rubric that scores whether the answer went and looked. They are written for `claude plugin eval`, which can run the same case with and without the plugin and report the difference — see [evals/README.md](evals/README.md), including the honest note that the suite has never been executed against the runner.
+`evals/` holds an eval suite that runs the same request twice, once with this plugin loaded and once without, and marks both against eight yes-or-no graders. It has been run. **It did not show that the skill improves anything** — with the skill the three runs scored 0.75, 0.63 and 0.50; without it, 1.00, 0.50 and 0.63. The runs disagree with themselves by more than the two sides disagree with each other, so three runs each way cannot separate this skill from luck.
+
+The more useful thing it found: on identical prompts, the skill fired in one run out of three, and never on smaller requests. Whether the model reaches for the skill matters more than what the skill says.
+
+[evals/README.md](evals/README.md) has the numbers, the graders, and what a measurement worth trusting would actually take. Until someone does that, treat this repository as a discipline that is argued for, not one that is proven.
 
 ## Where it came from
 

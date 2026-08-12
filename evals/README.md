@@ -40,6 +40,19 @@ Two smaller cases, `estimates-and-stop-conditions` and `pushback-on-fragile-choi
 
 A fourth case, `grounded-in-this-repo`, was written and deleted. It asked for a plan against this repository, and both sides scored zero because the sandbox is empty — correctly, both answers said the repo wasn't there and refused to invent a layout. A case that needs files on disk needs a `scaffold_script` and the `--scaffold` flag, which is a trap for anyone who runs the suite the obvious way.
 
-## Honest status
+## What the run actually showed
 
-The harness runs, the cases load, and the graders behave — five separate verdicts, partial credit, both sides marked the same way on the same question. What has **not** happened yet is a clean scored run of the big case: the first attempt at it was killed by the old five-minute limit after eighteen tool calls, and it hasn't been re-run since the limit was raised. No claim on this page says the skill improves anything, because nothing here has measured that yet.
+Three runs each way on the big case, 2026-08-12:
+
+| | run 1 | run 2 | run 3 | mean |
+|---|---|---|---|---|
+| with the skill | 0.75 | 0.63 | 0.50 | **0.63** |
+| without it | 1.00 | 0.50 | 0.63 | **0.71** |
+
+**This does not show the skill helps, and it does not show it hurts.** The gap between the two sides is 0.08. The spread inside a single side is 0.10 and 0.21. When the runs disagree with themselves by more than the two sides disagree with each other, three runs cannot separate the skill from luck, and no honest reading of that table says otherwise.
+
+Underneath the numbers is the finding worth keeping. **The skill fired in one of the three runs that had it available** — 12 turns and $1.52 on the run where it engaged, against 1 and 2 turns on the other two, which is a model answering unaided. On the two smaller cases it never fired at all. So the loudest variable in this experiment is not what the skill says, it is whether the model reaches for it, and that changes run to run on an identical prompt.
+
+Three of the eight graders passed on all six runs, which means they test something both sides already do and can never show a difference. One failed on five of six, which probably means it's written too strictly rather than that everybody fails it.
+
+A measurement worth trusting would need: the skill invoked deliberately rather than left to chance, around ten runs a side instead of three, the three always-pass graders replaced, and the strict one loosened. That's roughly $15–20 of runs. It hasn't been done, so nothing in this repository claims a measured improvement.
