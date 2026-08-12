@@ -1,5 +1,6 @@
 ---
 max_turns: 30
+timeout_seconds: 900
 allowed_tools: [Read, Glob, Grep, Skill]
 ---
 
@@ -21,4 +22,4 @@ The last column of my table rows shows a short status word — QUEUED, RUNNING, 
 }
 ```
 
-`.row` is used by every table in the app. Give me the exact CSS change that stops the wrapping, including the column width to use.
+`.row` is used by every table in the app. Write me a short implementation plan for the fix, including the exact column width to use, so I can hand it to someone else to carry out.
