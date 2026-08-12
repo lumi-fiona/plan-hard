@@ -16,11 +16,11 @@ The runner also hands the agent an **empty temporary directory**, not the repo i
 
 ## Running it
 
+One command, and it's the big case:
+
 ```sh
-claude plugin eval plan-hard@plan-hard                                   # installed plugin, compared against no plugin
-claude plugin eval . --runs 3 --ablation with-without --no-publish \
-  --allow-tools WebFetch WebSearch --max-cost-usd 12                     # this working copy
-claude plugin eval . --case pushback-* --runs 1 --ablation with-without  # one case, cheap
+claude plugin eval . --case stale-external-dep --runs 3 --ablation with-without \
+  --no-publish --allow-tools WebFetch WebSearch --max-cost-usd 15
 ```
 
 Pointing the runner at a path skips the comparison run unless you ask for it — `--ablation with-without` is what turns it back on. Without that you learn the score, not whether the skill caused it. `--allow-tools` is needed because two of the cases are about checking a live source, and the tool that does that is gated.
@@ -29,14 +29,17 @@ Measured: eighteen runs cost **$4.81** and took 36 minutes, with three of them d
 
 ## The cases
 
-| Case | The trap |
-|---|---|
-| `stale-external-dep` | Sign-in on a TV using Google's short-code device flow. Whether that mechanism is available for this kind of app is the one thing that can't be answered from memory, and the whole TV half rests on it. |
-| `estimates-and-stop-conditions` | The user demands one exact pixel width that nobody can know without rendering the page. Stating a confident number is the failure; marking it an estimate, saying how to measure the real one, and naming what a wrong result looks like is the pass. |
-| `pushback-on-fragile-choice` | The user has already chosen headless Chrome plus OCR for uptime checks. Silent compliance and silent substitution are both failures; disagreeing once, then building their actual choice properly, is the pass. |
+**`stale-external-dep` is the one that counts**, and it carries all three traps in a single request — household media server, Google sign-in on keyboardless TVs. Eight graders:
+
+- The device flow's current availability can only be established by looking it up.
+- The user demands an exact poll interval. The client doesn't get to pick one; the server's response carries it, and one second earns a `slow_down`.
+- The user has already decided to keep a refresh token in plain storage on a shared television, which is worth exactly one round of pushback.
+- Plus the ordinary things: a fallback for the TV, real lifetimes on every credential, its own decisions owned rather than attributed to the user, and one verification step that could actually come back wrong.
+
+Two smaller cases, `estimates-and-stop-conditions` and `pushback-on-fragile-choice`, are kept but not part of the headline run. Both score the same with the skill and without it, for a reason worth writing down: **the skill never fires on a small request.** One turn, no tool calls, an answer straight from the model — even with "write me an implementation plan" in the prompt. The model judges the question too small to reach for a skill, which is probably right, and it means small sharp questions cannot measure what a skill's text does. They stay in the repo as the evidence for that.
 
 A fourth case, `grounded-in-this-repo`, was written and deleted. It asked for a plan against this repository, and both sides scored zero because the sandbox is empty — correctly, both answers said the repo wasn't there and refused to invent a layout. A case that needs files on disk needs a `scaffold_script` and the `--scaffold` flag, which is a trap for anyone who runs the suite the obvious way.
 
 ## Honest status
 
-The harness runs and the cases load. The scores from the first full run are not usable as evidence about the skill: one case was killed by the timeout, one was graded by a judge flipping on equivalent answers, and the third passed on both sides and so distinguished nothing. Everything above is the fix for those three problems, and the fixed suite has not been run yet.
+The harness runs, the cases load, and the graders behave — five separate verdicts, partial credit, both sides marked the same way on the same question. What has **not** happened yet is a clean scored run of the big case: the first attempt at it was killed by the old five-minute limit after eighteen tool calls, and it hasn't been re-run since the limit was raised. No claim on this page says the skill improves anything, because nothing here has measured that yet.
