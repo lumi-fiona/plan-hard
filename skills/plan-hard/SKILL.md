@@ -13,7 +13,7 @@ It exists because of a real bake-off: three AI plans for the same feature were a
 - Another followed the user into a heavy custom component without naming the tradeoff, and its verification section promised an isolation guarantee its own design contradicted.
 - The winner verified external reality against current sources, reused what existed, kept fallbacks, counted its new modules on one hand, and was honest about what it didn't know.
 
-The difference was discipline, not brains. Apply the six disciplines below **before** presenting any plan. Everything here is read/research work — fully compatible with plan mode. Scale depth to stakes: a small refactor needs minutes of this; an architecture that other users, devices, or services will depend on needs all of it. When the plan is large, fan the research out to parallel subagents (one for codebase verification, one for external facts, one for prior art) rather than trimming the list.
+The difference was discipline, not brains. Apply the seven disciplines below **before** presenting any plan. Everything here is read/research work — fully compatible with plan mode. Scale depth to stakes: a small refactor needs minutes of this; an architecture that other users, devices, or services will depend on needs all of it. When the plan is large, fan the research out to parallel subagents (one for codebase verification, one for external facts, one for prior art) rather than trimming the list.
 
 ## 1 · Separate what was asked from what you're deciding
 
@@ -92,7 +92,21 @@ Climb the laziness ladder and stop at the first rung that holds: does this need 
 - **Design for decay.** Anything that expires, rotates, rate-limits, or gets revoked gets three things: a realistic lifetime *number* (never "long-lived" — write "~3–14 days"), a visible degraded state in the UX, and a reconnect path. "Automatic once set up" is only honest if you designed for the day it breaks.
 - Always include the **Cheaper alternative** section: the smaller rung, honestly scoped — what it delivers, what it gives up, roughly how much less work it is. Give the user the option to be lazy; it's their time and money.
 
-## 6 · Red-team your own plan before presenting it
+## 6 · Write it for the executor, not the reader
+
+Everything above makes the plan *true*. This makes it *survivable* once it leaves your context. It applies whenever the plan will be carried out by someone other than the session that wrote it — a fresh instance, a background subagent, a person tomorrow. If you are implementing it yourself in the next ten minutes, most of this is overhead: skip it and say so.
+
+Assume the executor has no memory of this conversation and cannot ask you anything. Every gap left "to be clarified during implementation" becomes a guess made by something that will not tell you it guessed.
+
+- **Restate the binding invariants at the top, as a block that can be pasted whole.** The capability that must never reach a client, the migration list that is append-only, the one canonical form every code is stored in, the test file that has to be registered by name or it never runs. Each task's dispatch carries that block verbatim, and so does each review. An invariant stated once inside task 3's prose binds task 3 and nothing else.
+- **Carry a file map — one row per file, what it is responsible for.** It is the inverse of the steps: indexed by file rather than by step, which is the only view in which "these two tasks touch the same test file, so they cannot run at the same time" is visible at all. It is also the cheapest way for a reviewer to see the shape without reading every step.
+- **Name what to read before writing, including line ranges in a large file.** "Familiarise yourself with the codebase" is not an instruction. "Read `streams.ts` 380–800, and the four test files you touch, for their fixtures" is.
+- **Pre-decide the contracts; do not defer them to a question.** Exact exported names, signatures, error strings, route and payload shapes, the assertions a test has to make. An executor told to ask when something is unclear either stalls waiting for an answer that is not coming, or — far more often — guesses and reports success. If you cannot settle an ambiguity yourself, it is a row in the Decisions table, not a hole in a step.
+  - **Arbitration with §4:** these look like opposite instructions and both are right, because they cover different things. Names, signatures and contracts are deterministic and shared across tasks, so a guess there costs an interface mismatch three tasks later — pin them exactly. Values that depend on a live context you cannot hold in your head — a cascade, a query plan, a layout, a tie-break inside a sort — stay hypotheses; for those you pre-decide the *measurement*, never the number.
+- **Mark every step that spends something.** Money, a paid quota, a rate-limited account, a destructive write, a deploy. A marked step names who runs it and tells the executor to write out the exact command and stop, rather than run it. An unmarked spending step is one an unattended agent will run at three in the morning.
+- **Price every ruling you make on the user's behalf.** One line: what it costs if it turns out wrong. "Cost if wrong: one assertion", "cost if wrong: a revert", "cost if wrong: a paid fetch nobody consented to" are three different amounts of care, and writing that line is what tells the executor which of your decisions it may quietly correct and which it must stop and escalate.
+
+## 7 · Red-team your own plan before presenting it
 
 Draft first, then attack the draft. Self-review by the model that wrote the draft shares its blind spots — the sweeps below reliably catch the *mechanical* classes, but a same-context reviewer passes its own assumptions. When the plan is large or high-stakes, run the sweeps as a SEPARATE fresh-context subagent: give it the plan file, repo access, and this sweep list, prompted only to attack (never to fix or praise); its findings are the sweeps' output. Solo self-attack is the fallback for small plans, not the default for big ones.
 
@@ -130,14 +144,18 @@ Use this structure — it's lifted from the bake-off winner:
 
 ```
 # <Plan title>
+## Global Constraints   (when anyone but this session will execute it)
+the invariants binding every task, written to be pasted verbatim into each dispatch and each review
 ## Context — what's true and how I know it
 stated requirements · verified external facts (with links) · existing-code facts (file:line) · assumptions (marked as such)
 ## Design
 the core mechanism (verified alive) · what's reused · what's new (count it)
 ## Decisions
 table: decision · chosen default · alternative · why   (+ the one pushback, if any applies)
+## File map
+table: file · responsibility   (the inverse index — what makes same-file conflicts visible)
 ## Steps
-numbered · exact files · what changes in each
+numbered · exact files · what changes in each · who runs it, if it spends something
 ## Risks
 honest ones, including against your own design · lifetime numbers for perishables
 ## Cheaper alternative
@@ -171,3 +189,8 @@ A final warning about the template above: **the sections are not the point — t
 - a check whose passing state is indistinguishable from its not-having-run state (a hidden element measuring zero, an empty result set, a selector that matches nothing)
 - a plan citing many line numbers in one large file, with no note that its own first task invalidates them
 - reaching for the most capable model on every subagent because the task felt important, rather than because it needed diagnosis
+- an invariant that binds every task, stated only inside one task's prose, in a plan somebody else will execute
+- a step whose ambiguity is left for the implementer to "ask about", in a plan meant to be run in the background
+- a step that spends money, a paid quota, or a deploy, with nobody named to run it
+- a ruling made on the user's behalf with no line saying what it costs if it is wrong
+- tasks meant to run at the same time, with no file map showing which two touch the same file

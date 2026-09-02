@@ -44,7 +44,8 @@ Six disciplines, applied before a plan is presented:
 3. **Verify external reality, don't recall it.** Anything involving a third-party tool, a platform API, or an auth flow is stale by default — training data is old, and a flagship built on a dead API is the exact failure this came from.
 4. **Write steps that can fail.** A step carries the check that would falsify it, and the check names the number that would fail. A stop condition is worth more than a value you guessed.
 5. **Design lazy, degrade gracefully.** Reuse before building; keep fallbacks; anything that expires gets a real lifetime number and a reconnect path; always offer the cheaper version of the plan.
-6. **Red-team the draft before presenting it.** Seven sweeps, including a contradiction sweep, a two-week test, and an honesty pass. A plan with zero listed risks means nobody looked.
+6. **Write it for the executor, not the reader.** When someone else — a fresh session, a background agent, a person tomorrow — will carry the plan out: the invariants get restated at the top as a block that can be pasted whole, a file map says which tasks collide, contracts are pinned instead of left to be asked about, any step that spends money names who runs it, and every ruling carries a line on what it costs if it is wrong.
+7. **Red-team the draft before presenting it.** Seven sweeps, including a contradiction sweep, a two-week test, and an honesty pass. A plan with zero listed risks means nobody looked.
 
 ## Checking that it does anything
 
