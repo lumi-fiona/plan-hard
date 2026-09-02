@@ -10,7 +10,7 @@
       "name": "plan-hard",
       "source": "./",
       "description": "A planning discipline for Claude Code: verify every load-bearing claim, ground it in the real code, red-team the draft, and mark what is still an assumption.",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "Lumi"
       },

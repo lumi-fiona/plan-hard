@@ -106,6 +106,8 @@ Assume the executor has no memory of this conversation and cannot ask you anythi
 - **Mark every step that spends something.** Money, a paid quota, a rate-limited account, a destructive write, a deploy. A marked step names who runs it and tells the executor to write out the exact command and stop, rather than run it. An unmarked spending step is one an unattended agent will run at three in the morning.
 - **Price every ruling you make on the user's behalf.** One line: what it costs if it turns out wrong. "Cost if wrong: one assertion", "cost if wrong: a revert", "cost if wrong: a paid fetch nobody consented to" are three different amounts of care, and writing that line is what tells the executor which of your decisions it may quietly correct and which it must stop and escalate.
 
+The consumer of these blocks is the executor's counterpart skill — `execute-right`, whose controller section says what to do with each: the constraints are pasted into every dispatch and review, the file map schedules what may run at once, a cost-marked step is run by the controller and its measurement handed to the next reviewer, a priced ruling sets what may be corrected without asking. A plan written for someone else names both skills in its header, the way `writing-plans` names its orchestration skill — the artifact carries the hand-off, because the conversation will not.
+
 ## 7 · Red-team your own plan before presenting it
 
 Draft first, then attack the draft. Self-review by the model that wrote the draft shares its blind spots — the sweeps below reliably catch the *mechanical* classes, but a same-context reviewer passes its own assumptions. When the plan is large or high-stakes, run the sweeps as a SEPARATE fresh-context subagent: give it the plan file, repo access, and this sweep list, prompted only to attack (never to fix or praise); its findings are the sweeps' output. Solo self-attack is the fallback for small plans, not the default for big ones.
@@ -144,6 +146,7 @@ Use this structure — it's lifted from the bake-off winner:
 
 ```
 # <Plan title>
+> For agentic workers: <orchestration skill> runs this task-by-task; `execute-right` governs what a step may be trusted to mean.
 ## Global Constraints   (when anyone but this session will execute it)
 the invariants binding every task, written to be pasted verbatim into each dispatch and each review
 ## Context — what's true and how I know it
